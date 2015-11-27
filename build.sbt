@@ -19,7 +19,13 @@ libraryDependencies ++= Seq(
 
   "ch.qos.logback" % "logback-classic" % "1.1.3",
 
-  "org.scalatest" %% "scalatest" % "2.2.4" % "test"
+  "org.scalatest" %% "scalatest" % "2.2.4" % "test",
+
+  // other dependencies here
+  "org.scalanlp" %% "breeze" % "0.10",
+  // native libraries are not included by default. add this if you want them (as of 0.7)
+  // native libraries greatly improve performance, but increase jar sizes.
+  "org.scalanlp" %% "breeze-natives" % "0.10"
 )
 
 slick <<= slickCodeGenTask
@@ -39,3 +45,8 @@ lazy val slickCodeGenTask = (sourceManaged, dependencyClasspath in Compile, runn
   val fname = outputDir + "/" + "bi/models" + "/Tables.scala"
   Seq(file(fname))
 }
+
+resolvers ++= Seq(
+  // other resolvers here
+  "Sonatype Releases" at "https://oss.sonatype.org/content/repositories/releases/"
+)
