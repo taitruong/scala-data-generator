@@ -20,8 +20,6 @@ object Main extends App {
   override def main(args:Array[String]): Unit = {
     // create Vacancies
 
-    val file = new File(".")
-    println(">>>>" + file.getCanonicalPath)
     val vacancies = List(
       Vacancy(1, "Java Developer"),
       Vacancy(2, "Scrum Master"),

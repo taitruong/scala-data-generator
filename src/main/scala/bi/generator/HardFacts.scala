@@ -8,8 +8,8 @@ import scala.io.Source
 
 case class HardFacts() {
 
-  private val personFile = Source.fromFile("src/main/resources/rawdata/PersonData.csv")
-  val iter = personFile.getLines()
+  private val personFile = getClass.getResourceAsStream("/rawdata/PersonData.csv")
+  val iter = scala.io.Source.fromInputStream(personFile).getLines()
   val persons = iter.map(line => {
     val elements = line.split(Array(';', ' '))
     if( elements.length != 3)
