@@ -1,44 +1,35 @@
 package bi.dao
 
-import java.util.concurrent.Executors
-
 import bi.models.Tables
-import bi.models.Tables._
-import bi.models.Tables.profile.api._
-
-import scala.concurrent.{ExecutionContext, Future}
+import io.strongtyped.active.slick._
+import slick.ast.BaseTypedType
+import io.strongtyped.active.slick.Lens._
+import scala.language.postfixOps
 
 /**
- * Created by ttruong on 26.11.15.
+ * For more on ActiveSlick see: http://www.strongtyped.io/active-slick/
+ * Created by ttruong on 03.12.15.
  */
-trait FactApplicantDao {
+object FactApplicantDao extends EntityActions with PostgresProfileProvider {
 
-  def findById(id: Long): Future[Option[Tables.FactApplicantRow]]
-  def findByApplicantId(id: Long): Future[Option[Tables.FactApplicantRow]]
-  def insert(dimApplicantId: Long):Future[Tables.FactApplicantRow]
-}
+  //import Slick traits and classes like Rep and DBIO
+  import jdbcProfile.api._
 
-case class FactApplicantDaoImpl(db: Database) extends FactApplicantDao {
-  private implicit val ec = ExecutionContext.fromExecutorService(Executors.newFixedThreadPool(5))
+  val baseTypedType = implicitly[BaseTypedType[Id]]
 
-  def findById(id: Long): Future[Option[Tables.FactApplicantRow]] = {
-    val query: Query[Tables.FactApplicant, Tables.FactApplicant#TableElementType, Seq] = FactApplicant.filter(_.factId === id)
-    val action = query.result.headOption
-    db.run(action)
+  type Id = Long;
+  type Entity = Tables.FactApplicantRow
+  type EntityTable = Tables.FactApplicant
+  val tableQuery = Tables.FactApplicant
 
+  def $id(table: EntityTable): Rep[Id] = table.factId
+
+  //getter/setter for id
+  val idLens = lens { entity: Entity => Option(entity.factId )} //getter function
+                    { (entity, factId) => entity.copy(factId = factId.get)} //setter function
+
+  def findByApplicantId(applicantId:Long): DBIO[Seq[Entity]] = {
+    tableQuery.filter(_.dimApplicantId === applicantId).result
   }
 
-  def findByApplicantId(id: Long): Future[Option[Tables.FactApplicantRow]] = {
-    val query: Query[Tables.FactApplicant, Tables.FactApplicant#TableElementType, Seq] = FactApplicant.filter(_.dimApplicantId === id)
-    val action = query.result.headOption
-    db.run(action)
-
-  }
-
-  def insert(dimApplicantId: Long):Future[Tables.FactApplicantRow] = {
-    val insertQuery = FactApplicant returning FactApplicant.map(_.factId) into (
-      (item, id) => item.copy(factId = id))
-    val action = insertQuery += FactApplicantRow(-1, dimApplicantId, 1, 1, 1, 1, 1, 1, 1, 1, 1, Some(1), Some(1), Some(1), Some(1), Some(1), Some(1), 1)
-    db.run(action)
-  }
 }

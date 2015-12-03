@@ -9,6 +9,8 @@ scalacOptions := Seq("-unchecked", "-deprecation", "-encoding", "utf8")
 libraryDependencies ++= Seq(
   "com.typesafe.slick" %% "slick" % "3.1.0",
   "com.typesafe.slick" %% "slick-codegen" % "3.1.0",
+  //use ActiveSlick for generic DAOs
+  "io.strongtyped" %% "active-slick" % "0.3.3",
 
   "org.postgresql" % "postgresql" % "9.4-1204-jdbc41",
   //for hikari: do not use HikariCP (only for Java 8) instead use HikariCP-java6
@@ -21,6 +23,7 @@ libraryDependencies ++= Seq(
 
   "org.scalatest" %% "scalatest" % "2.2.4" % "test",
 
+  //Gaussian libraries
   // other dependencies here
   "org.scalanlp" %% "breeze" % "0.10",
   // native libraries are not included by default. add this if you want them (as of 0.7)
