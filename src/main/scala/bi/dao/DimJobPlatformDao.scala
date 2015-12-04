@@ -18,15 +18,18 @@ object DimJobPlatformDao extends EntityActions with PostgresProfileProvider {
 
   val baseTypedType = implicitly[BaseTypedType[Id]]
 
+  /**
+   * NOTE: There is no primary key! In this case we use the person ID
+   */
   type Id = Long;
   type Entity = Tables.DimPoolRow
   type EntityTable = Tables.DimPool
   val tableQuery = Tables.DimPool
 
-  def $id(table: EntityTable): Rep[Id] = table.dimId
+  def $id(table: EntityTable): Rep[Id] = table.personId
 
   //getter/setter for id
-  val idLens = lens { entity: Entity => Option(entity.dimId )} //getter function
-                    { (entity, dimId) => entity.copy(dimId = dimId.get)} //setter function
+  val idLens = lens { entity: Entity => Option(entity.personId)} //getter function
+                    { (entity, personId) => entity.copy(personId = personId.get)} //setter function
 
 }
